@@ -43,8 +43,8 @@ jobs:
           docker stop itsmeakhil || true
           docker rm itsmeakhil || true
           
-          # Run the new container
+          # Run the new container with environment variables for domain and email
           docker run -d -p 80:80 -p 443:443 --name itsmeakhil \
-        -e DOMAIN=${{ secrets.DOMAIN }} \
-        -e EMAIL=${{ secrets.EMAIL }} \
-        ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
+            -e DOMAIN=${{ secrets.DOMAIN }} \
+            -e EMAIL=${{ secrets.EMAIL }} \
+            ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
