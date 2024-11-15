@@ -256,7 +256,7 @@ const DevopsPortfolio = () => {
       <SocialLinks />
       {/* Main Heading */}
       <h1 className="text-3xl font-bold text-center mb-8 font-mono text-blue-500">
-        DevOps Portfolio
+        Akhil's DevOps Portfolio
       </h1>
       <div className="max-w-6xl mx-auto relative">
         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent transform -translate-x-1/2" />
