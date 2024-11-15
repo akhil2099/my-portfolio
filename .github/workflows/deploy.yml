@@ -44,4 +44,7 @@ jobs:
           docker rm itsmeakhil || true
           
           # Run the new container
-          docker run -d -p 80:80 --name itsmeakhil ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
+          docker run -d -p 80:80 -p 443:443 --name itsmeakhil \
+        -e DOMAIN=${{ secrets.DOMAIN }} \
+        -e EMAIL=${{ secrets.EMAIL }} \
+        ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
