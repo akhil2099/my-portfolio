@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Ensure necessary directories exist
 mkdir -p /etc/nginx/conf.d
 mkdir -p /etc/letsencrypt/live
