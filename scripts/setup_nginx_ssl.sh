@@ -14,6 +14,10 @@ fi
 echo "Installing Certbot and Nginx..."
 apk --no-cache add certbot nginx
 
+# Stop Nginx temporarily to free port 80 for Certbot
+echo "Stopping Nginx..."
+nginx -s stop
+
 # Test networking
 echo "Testing port 80 and 443..."
 nc -zv 127.0.0.1 80 || echo "Port 80 is not open locally."
@@ -61,8 +65,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Reloading Nginx..."
-nginx -s reload || nginx
+echo "Starting Nginx..."
+nginx
 
 # Set up cron job for automatic renewal
 echo "Setting up automatic SSL certificate renewal..."
