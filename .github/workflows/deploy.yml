@@ -15,6 +15,8 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
+      with:
+        version: latest
 
     - name: Log in to DockerHub
       uses: docker/login-action@v2
@@ -24,8 +26,7 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t itsmeakhil:latest .
-        docker tag itsmeakhil:latest ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
 
     - name: SSH into EC2 and deploy
@@ -47,4 +48,5 @@ jobs:
           docker run -d -p 80:80 -p 443:443 --name itsmeakhil \
             -e DOMAIN=${{ secrets.DOMAIN }} \
             -e EMAIL=${{ secrets.EMAIL }} \
+            --restart always \
             ${{ secrets.DOCKER_USERNAME }}/itsmeakhil:latest
