@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Ensure necessary directories exist
 mkdir -p /etc/nginx/conf.d
 mkdir -p /etc/letsencrypt/live
@@ -11,28 +10,29 @@ if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
   exit 1
 fi
 
-# Install Certbot if not already installed
-echo "Installing Certbot..."
-apk --no-cache add certbot
+# Install necessary packages
+echo "Installing Certbot and Nginx..."
+apk --no-cache add certbot nginx
 
-# Check if the SSL certificates are already present
+# Test networking
+echo "Testing port 80 and 443..."
+nc -zv 127.0.0.1 80 || echo "Port 80 is not open locally."
+nc -zv 127.0.0.1 443 || echo "Port 443 is not open locally."
+
+# Check if SSL certificates already exist
 if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
     echo "Obtaining SSL certificates from Let's Encrypt..."
     
-    # Run Certbot to obtain SSL certificates
     certbot certonly --standalone --agree-tos --email "$EMAIL" -d "$DOMAIN" -d "www.$DOMAIN"
     
-    # Check if certbot was successful
     if [ $? -ne 0 ]; then
-        echo "Error obtaining SSL certificates from Let's Encrypt!"
+        echo "Error obtaining SSL certificates. Check logs at /var/log/letsencrypt/letsencrypt.log."
         exit 1
     fi
 fi
 
-# Configure Nginx to use SSL certificates
+# Configure Nginx for SSL
 echo "Configuring Nginx to use SSL..."
-
-# Create Nginx configuration for SSL
 cat <<EOF > /etc/nginx/conf.d/default.conf
 server {
     listen 80;
@@ -54,13 +54,20 @@ server {
 }
 EOF
 
-# Reload Nginx to apply the new SSL configuration
-echo "Reloading Nginx..."
-nginx -s reload
+# Validate Nginx configuration and reload
+nginx -t
+if [ $? -ne 0 ]; then
+    echo "Nginx configuration test failed!"
+    exit 1
+fi
 
-# Set up cron job for automatic certificate renewal
+echo "Reloading Nginx..."
+nginx -s reload || nginx
+
+# Set up cron job for automatic renewal
 echo "Setting up automatic SSL certificate renewal..."
 echo "0 0,12 * * * certbot renew --quiet && nginx -s reload" > /etc/crontabs/root
 
-# Start the cron service to handle automatic renewal
-crond
+# Start cron service
+echo "Starting cron service..."
+crond -f
