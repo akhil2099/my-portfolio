@@ -9,6 +9,7 @@ import {
   Trophy,
   Briefcase,
   GraduationCap,
+  Coffee,
   Award,
   Check,
 } from "lucide-react";
@@ -129,6 +130,14 @@ const SocialLinks = () => {
           rel="noopener noreferrer"
         >
           <Linkedin className="w-6 h-6" />
+        </a>
+        <a
+          href="https://www.buymeacoffee.com/akhil2099"
+          className="text-blue-500 hover:text-blue-400 transition-all duration-300 hover:scale-110 transform"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Coffee className="w-6 h-6" />
         </a>
         <a
           onClick={() => navigate('/Contact')}
