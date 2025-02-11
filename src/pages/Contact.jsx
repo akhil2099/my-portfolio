@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Send, Sparkles, Mail } from 'lucide-react';
 import { useDocTitle } from '../components/CustomHook.jsx';
 
